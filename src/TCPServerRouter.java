@@ -159,7 +159,7 @@ public class TCPServerRouter
                     System.out.println(HEADER + ": waiting for other ServerRouter to be ready");
                     readyWriter.write("ready");
                     System.out.println("sent");
-                    readyReader.readLine(); // blocks until also receives ready
+                    while(readyReader.readLine() == null)
                     System.out.println(HEADER + ": other ServerRouter is ready, starting!");
                 }
                 catch(IOException e)
