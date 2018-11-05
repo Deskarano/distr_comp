@@ -17,6 +17,8 @@ public class TCPServerRouter
     {
         Scanner input = new Scanner(System.in);
 
+        Socket otherServerRouter = null;
+
         String otherServerRouterIP;
         int otherServerRouterPort;
 
@@ -24,7 +26,6 @@ public class TCPServerRouter
 
         while (true)
         {
-
             System.out.print(HEADER + ">>> ");
             String read = input.nextLine();
             String[] command = read.split(" ");
@@ -34,22 +35,12 @@ public class TCPServerRouter
                 System.out.println(HEADER + ": connecting to other SR at " + command[1] + ":" + command[2]);
                 try
                 {
-                    Socket otherServerRouter = new Socket(command[1], Integer.parseInt(command[2]));
-                    System.out.println(HEADER + ": successfully connected to " + command[1] + ":" + command[2]);
+                    otherServerRouter = new Socket(command[1], Integer.parseInt(command[2]));
 
                     otherServerRouterIP = command[1];
                     otherServerRouterPort = Integer.parseInt(command[2]);
 
-                    PrintWriter srWriter = new PrintWriter(otherServerRouter.getOutputStream(), true);
-                    BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
-
-                    System.out.println(HEADER + ": sending test message");
-                    srWriter.println("hahahahaHAHAHAHAHAHAhahah");
-
-                    String response = srReader.readLine();
-                    System.out.println(HEADER + ": received response '" + response + "', closing");
-
-                    otherServerRouter.close();
+                    System.out.println(HEADER + ": connected to " + otherServerRouterIP + ":" + otherServerRouterPort);
                 }
                 catch (UnknownHostException e)
                 {
@@ -74,25 +65,14 @@ public class TCPServerRouter
 
                     ServerSocket serverRouterListener = new ServerSocket(Integer.parseInt(command[1]));
                     serverRouterListener.setSoTimeout(timeout);
-                    Socket otherServerRouter = serverRouterListener.accept();
+                    otherServerRouter = serverRouterListener.accept();
 
                     serverRouterListener.close();
-                    System.out.println(HEADER + ": connected to "
-                            + otherServerRouter.getInetAddress().getHostAddress() + ":" + command[1]);
 
                     otherServerRouterIP = otherServerRouter.getInetAddress().getHostAddress();
                     otherServerRouterPort = Integer.parseInt(command[1]);
 
-                    PrintWriter srWriter = new PrintWriter(otherServerRouter.getOutputStream(), true);
-                    BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
-
-                    System.out.println(HEADER + ": waiting for initial message");
-                    String response = srReader.readLine();
-
-                    System.out.println(HEADER + ": received message '" + response + "', closing");
-                    srWriter.println(response);
-
-                    otherServerRouter.close();
+                    System.out.println(HEADER + ": connected to " + otherServerRouterIP + ":" + otherServerRouterPort);
                 }
                 catch (InterruptedIOException e)
                 {
@@ -134,9 +114,8 @@ public class TCPServerRouter
                         {
                             System.out.println(HEADER + ": listening for peer " + i);
                             Socket peerSocket = peerListener.accept();
-                            BufferedReader peerReader = new BufferedReader(
-                                    new InputStreamReader(
-                                            peerSocket.getInputStream()));
+
+                            BufferedReader peerReader = new BufferedReader(new InputStreamReader(peerSocket.getInputStream()));
 
                             String peerIP = peerSocket.getInetAddress().getHostAddress();
                             String peerType = peerReader.readLine();
@@ -171,11 +150,27 @@ public class TCPServerRouter
             }
             else if (command[0].equals(COMMAND_START)) // args: [requestPort]
             {
+                // wait for both ServerRouters to be ready
+                try
+                {
+                    PrintWriter readyWriter = new PrintWriter(otherServerRouter.getOutputStream(), true);
+                    BufferedReader readyReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
+
+                    readyWriter.write("ready");
+                    readyReader.readLine(); // blocks until also receives ready
+                }
+                catch(IOException e)
+                {
+
+                }
+
+                System.out.println("connecting to peers");
+
                 for (int i = 0; i < peerRoutingTable.length; i++)
                 {
                     try
                     {
-                        PrintWriter peerWriter = new PrintWriter(((Socket) peerRoutingTable[i][2]).getOutputStream());
+                        PrintWriter peerWriter = new PrintWriter(((Socket) peerRoutingTable[i][2]).getOutputStream(), true);
                         peerWriter.write("start");
 
                         peerWriter.close();
@@ -183,7 +178,7 @@ public class TCPServerRouter
                     }
                     catch (IOException e)
                     {
-                        System.out.println(HEADER + ": IOException when sending initial start messaage");
+                        System.out.println(HEADER + ": IOException when sending initial start message");
                         e.printStackTrace();
                         System.out.println();
                     }
