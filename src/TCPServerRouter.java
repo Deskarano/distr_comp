@@ -26,7 +26,7 @@ public class TCPServerRouter
 
         while (true)
         {
-            System.out.print(HEADER + ">>> ");
+            System.out.print(HEADER + " >>> ");
             String read = input.nextLine();
             String[] command = read.split(" ");
 
@@ -158,6 +158,7 @@ public class TCPServerRouter
 
                     System.out.println(HEADER + ": waiting for other ServerRouter to be ready");
                     readyWriter.write("ready");
+                    System.out.println("sent");
                     readyReader.readLine(); // blocks until also receives ready
                     System.out.println(HEADER + ": other ServerRouter is ready, starting!");
                 }
