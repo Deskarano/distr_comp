@@ -157,12 +157,9 @@ public class TCPServerRouter
                     BufferedReader readyReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                     System.out.println(HEADER + ": waiting for other ServerRouter to be ready");
-                    readyWriter.write("ready");
+                    readyWriter.println("ready");
                     System.out.println("sent");
-                    while(readyReader.readLine() == null)
-                    {
-                        System.out.println("no message yet!");
-                    }
+                    readyReader.readLine();
                     System.out.println(HEADER + ": other ServerRouter is ready, starting!");
                 }
                 catch(IOException e)
