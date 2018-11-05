@@ -86,10 +86,13 @@ public class TCPServerRouter
                     BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                     System.out.println(HEADER + ": waiting for initial message");
-                    String response = srReader.readLine();
-                    System.out.println(HEADER + ": received message '" + response + "', closing");
+                    String response;
+                    while((response = srReader.readLine()) != null)
+                    {
+                        System.out.println(HEADER + ": received message '" + response + "', closing");
+                        srWriter.println(response);
+                    }
 
-                    srWriter.println(response);
                     otherServerRouter.close();
                 }
                 catch (InterruptedIOException e)
