@@ -48,7 +48,7 @@ public class TCPServerRouter
 
                     String response = srReader.readLine();
                     System.out.println(HEADER + ": received response '" + response + "', closing");
-                    
+
                     otherServerRouter.close();
                 }
                 catch (UnknownHostException e)
@@ -88,7 +88,9 @@ public class TCPServerRouter
 
                     System.out.println(HEADER + ": waiting for initial message");
                     String response = srReader.readLine();
+
                     System.out.println(HEADER + ": received message '" + response + "', closing");
+                    srWriter.println(response);
 
                     otherServerRouter.close();
                 }
