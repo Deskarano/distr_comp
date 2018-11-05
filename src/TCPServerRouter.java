@@ -160,6 +160,9 @@ public class TCPServerRouter
                     readyWriter.write("ready");
                     System.out.println("sent");
                     while(readyReader.readLine() == null)
+                    {
+                        System.out.println("no message yet!");
+                    }
                     System.out.println(HEADER + ": other ServerRouter is ready, starting!");
                 }
                 catch(IOException e)
