@@ -45,13 +45,10 @@ public class TCPServerRouter
 
                     System.out.println(HEADER + ": sending test message");
                     srWriter.println("test");
-                    String response;
 
-                    while((response = srReader.readLine()) != null)
-                    {
-                        System.out.println(HEADER + ": received response '" + response + "', closing");
-                    }
-
+                    String response = srReader.readLine();
+                    System.out.println(HEADER + ": received response '" + response + "', closing");
+                    
                     otherServerRouter.close();
                 }
                 catch (UnknownHostException e)
@@ -71,7 +68,7 @@ public class TCPServerRouter
             {
                 try
                 {
-                    System.out.println(HEADER + ": listening for other SR on port " + command[1] );
+                    System.out.println(HEADER + ": listening for other SR on port " + command[1]);
 
                     int timeout = Integer.parseInt(command[2]) * 1000;
 
@@ -90,12 +87,8 @@ public class TCPServerRouter
                     BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                     System.out.println(HEADER + ": waiting for initial message");
-                    String response;
-                    while((response = srReader.readLine()) != null)
-                    {
-                        System.out.println(HEADER + ": received message '" + response + "', closing");
-                        srWriter.println(response);
-                    }
+                    String response = srReader.readLine();
+                    System.out.println(HEADER + ": received message '" + response + "', closing");
 
                     otherServerRouter.close();
                 }
@@ -166,7 +159,7 @@ public class TCPServerRouter
                     {
                         peerListener.close();
                     }
-                    catch(IOException e)
+                    catch (IOException e)
                     {
                         System.out.println(HEADER + ": IOException when closing peerListener");
                         e.printStackTrace();
@@ -208,9 +201,9 @@ public class TCPServerRouter
                     System.out.println();
                 }
 
-                if(requestListener != null)
+                if (requestListener != null)
                 {
-                    while(true)
+                    while (true)
                     {
                         try
                         {
@@ -220,9 +213,9 @@ public class TCPServerRouter
                             System.out.println(HEADER + ": got connection from " + peerIP);
 
                             boolean peerFound = false;
-                            for(int i = 0; i < peerRoutingTable.length; i++)
+                            for (int i = 0; i < peerRoutingTable.length; i++)
                             {
-                                if(peerIP.equals(peerRoutingTable[i][0]))
+                                if (peerIP.equals(peerRoutingTable[i][0]))
                                 {
                                     peerFound = true;
                                     peerRoutingTable[i][2] = requestPeer;
@@ -230,7 +223,7 @@ public class TCPServerRouter
                                 }
                             }
 
-                            if(peerFound)
+                            if (peerFound)
                             {
 
                             }
@@ -240,7 +233,7 @@ public class TCPServerRouter
                                 requestPeer.close();
                             }
                         }
-                        catch(IOException e)
+                        catch (IOException e)
                         {
 
                         }
