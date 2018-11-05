@@ -25,7 +25,7 @@ public class TCPServerRouter
         while (true)
         {
 
-            System.out.print(HEADER + "> ");
+            System.out.print(HEADER + ">>> ");
             String read = input.nextLine();
             String[] command = read.split(" ");
 
@@ -44,7 +44,7 @@ public class TCPServerRouter
                     BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                     System.out.println(HEADER + ": sending test message");
-                    srWriter.println("test");
+                    srWriter.println("hahahahaHAHAHAHAHAHAhahah");
 
                     String response = srReader.readLine();
                     System.out.println(HEADER + ": received response '" + response + "', closing");
