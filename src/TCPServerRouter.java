@@ -44,7 +44,7 @@ public class TCPServerRouter
                     BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                     System.out.println(HEADER + ": sending test message");
-                    srWriter.println("test");
+                    srWriter.println("test\n");
                     String response = srReader.readLine();
 
                     System.out.println(HEADER + ": received response '" + response + "', closing");
@@ -85,6 +85,7 @@ public class TCPServerRouter
                     PrintWriter srWriter = new PrintWriter(otherServerRouter.getOutputStream());
                     BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
+                    System.out.println(HEADER + ": waiting for initial message");
                     String response = srReader.readLine();
                     System.out.println(HEADER + ": received message '" + response + "', closing");
 
