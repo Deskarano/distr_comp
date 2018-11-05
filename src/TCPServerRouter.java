@@ -156,12 +156,14 @@ public class TCPServerRouter
                     PrintWriter readyWriter = new PrintWriter(otherServerRouter.getOutputStream(), true);
                     BufferedReader readyReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
+                    System.out.println(HEADER + ": waiting for other ServerRouter to be ready");
                     readyWriter.write("ready");
                     readyReader.readLine(); // blocks until also receives ready
+                    System.out.println(HEADER + ": other ServerRouter is ready, starting!");
                 }
                 catch(IOException e)
                 {
-
+                    System.out.println(HEADER + ": IOException when creating readers and writers for ServerRouter");
                 }
 
                 System.out.println("connecting to peers");
