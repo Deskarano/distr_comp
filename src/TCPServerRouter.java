@@ -40,14 +40,18 @@ public class TCPServerRouter
                     otherServerRouterIP = command[1];
                     otherServerRouterPort = Integer.parseInt(command[2]);
 
-                    PrintWriter srWriter = new PrintWriter(otherServerRouter.getOutputStream());
+                    PrintWriter srWriter = new PrintWriter(otherServerRouter.getOutputStream(), true);
                     BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                     System.out.println(HEADER + ": sending test message");
-                    srWriter.println("test\n");
-                    String response = srReader.readLine();
+                    srWriter.println("test");
+                    String response;
 
-                    System.out.println(HEADER + ": received response '" + response + "', closing");
+                    while((response = srReader.readLine()) != null)
+                    {
+                        System.out.println(HEADER + ": received response '" + response + "', closing");
+                    }
+
                     otherServerRouter.close();
                 }
                 catch (UnknownHostException e)
@@ -82,7 +86,7 @@ public class TCPServerRouter
                     otherServerRouterIP = otherServerRouter.getInetAddress().getHostAddress();
                     otherServerRouterPort = Integer.parseInt(command[1]);
 
-                    PrintWriter srWriter = new PrintWriter(otherServerRouter.getOutputStream());
+                    PrintWriter srWriter = new PrintWriter(otherServerRouter.getOutputStream(), true);
                     BufferedReader srReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                     System.out.println(HEADER + ": waiting for initial message");
