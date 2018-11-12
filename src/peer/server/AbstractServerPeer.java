@@ -7,6 +7,7 @@ import java.net.Socket;
 
 public abstract class AbstractServerPeer extends AbstractPeer
 {
+    private static final String HEADER = "(AbstractServerPeer)";
     private ServerSocket serverListener;
 
     public AbstractServerPeer(String type)
@@ -20,11 +21,13 @@ public abstract class AbstractServerPeer extends AbstractPeer
         {
             if (serverListener == null)
             {
+                System.out.println(HEADER + ": starting new serversocket on port " + port);
                 serverListener = new ServerSocket(port);
 
             }
             else if(serverListener.getLocalPort() != port)
             {
+                System.out.println(HEADER + ": switching serversocket to port " + port);
                 serverListener.close();
                 serverListener = new ServerSocket(port);
             }
@@ -39,7 +42,11 @@ public abstract class AbstractServerPeer extends AbstractPeer
     {
         try
         {
-            return serverListener.accept();
+            System.out.println(HEADER + ": listening for new client...");
+            Socket client = serverListener.accept();
+            System.out.println(HEADER + ": found new client at " + client.getInetAddress().getHostAddress());
+
+            return client;
         }
         catch(Exception e)
         {

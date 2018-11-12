@@ -3,13 +3,13 @@ package peer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 
 import protocol.Protocol;
 
 public abstract class AbstractPeer
 {
+    private static final String HEADER = "(AbstractPeer)";
     protected String type;
 
     protected String serverRouterIP;
@@ -25,6 +25,7 @@ public abstract class AbstractPeer
         try
         {
             Socket serverRouter = new Socket(routerIP, routerPort);
+            System.out.println(HEADER + ": connected to ServerRouter at " + routerIP + ":" + listenPort);
 
             //init readers and writers
             PrintWriter serverRouterWriter = new PrintWriter(serverRouter.getOutputStream(), true);
@@ -37,17 +38,21 @@ public abstract class AbstractPeer
                 initMessage += " " + listenPort;
             }
 
+            System.out.println(HEADER + ": sending initial message to ServerRouter: " + initMessage);
+
             serverRouterWriter.println(initMessage);
 
             //wait for ServerRouter to be ready
             String response = serverRouterReader.readLine();
 
-            System.out.println("received response: " + response);
+            System.out.println(HEADER + ": received response " + response);
 
-            if (response.equals(Protocol.MESSAGE_SR_START))
+            String[] responseSplit = response.split(" ");
+
+            if (responseSplit[0].equals(Protocol.HEADER_START))
             {
                 serverRouterIP = routerIP;
-                serverRouterPort = routerPort;
+                serverRouterPort = Integer.parseInt(responseSplit[1]);
                 return true;
             }
             else

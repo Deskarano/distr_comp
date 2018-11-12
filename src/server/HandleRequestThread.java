@@ -24,10 +24,12 @@ public class HandleRequestThread extends Thread
 
     private String requestFromSame(String type)
     {
+        System.out.println(HEADER + ": searching in same");
         for (int i = 0; i < routingTable.length; i++)
         {
             if (routingTable[i][1].equals(type))
             {
+                System.out.println(HEADER + ": found match, returning " + routingTable[i][0]);
                 return (String) routingTable[i][0];
             }
         }
@@ -37,16 +39,25 @@ public class HandleRequestThread extends Thread
 
     private String requestFromOther(String type)
     {
-        String result = Protocol.RESPONE_NONE;
+        String response = Protocol.RESPONE_NONE;
+        System.out.println(HEADER + ": searching in other");
         try
         {
             Socket otherServerRouter = new Socket(otherServerRouterIP, otherServerRouterPort);
 
+            System.out.println(HEADER + ": connected to other ServerRouter");
+
             PrintWriter serverRouterWriter = new PrintWriter(otherServerRouter.getOutputStream(), true);
             BufferedReader serverRouterReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
+            String request = Protocol.REQUEST_COMMAND + " " + type + " " + Protocol.REQUEST_FROM_SAME;
+
+            System.out.println(": sent request " + request);
+
             serverRouterWriter.println(Protocol.REQUEST_COMMAND + " " + type + " " + Protocol.REQUEST_FROM_SAME);
-            result = serverRouterReader.readLine();
+            response = serverRouterReader.readLine();
+
+            System.out.println(": received response " + response);
 
             serverRouterWriter.close();
             serverRouterReader.close();
@@ -57,7 +68,7 @@ public class HandleRequestThread extends Thread
             e.printStackTrace(System.out);
         }
 
-        return result;
+        return response;
     }
 
     // Run method (will run for each machine that connects to the ServerRouter)
@@ -134,6 +145,8 @@ public class HandleRequestThread extends Thread
                     }
                 }
 
+                System.out.println(HEADER + ": peer socket closed, exiting thread");
+                
                 peerWriter.close();
                 peerReader.close();
             }
