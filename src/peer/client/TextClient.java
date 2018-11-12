@@ -2,6 +2,8 @@ package peer.client;
 
 import protocol.Protocol;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class TextClient extends AbstractClientPeer
@@ -13,10 +15,17 @@ public class TextClient extends AbstractClientPeer
 
     public void run()
     {
-        //TODO: generic-ify
-        registerToServerRouter("8.8.8.8", 25565);
-        Socket server = connectToServer("text", Protocol.REQUEST_FROM_FAR);
+        Socket server = connectToServer("text", "near");
 
-        // send stuff over socket, get results back
+        try
+        {
+            PrintWriter writer = new PrintWriter(server.getOutputStream(), true);
+
+            writer.println("test");
+        }
+        catch (IOException e)
+        {
+
+        }
     }
 }

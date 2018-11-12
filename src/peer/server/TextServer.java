@@ -1,5 +1,8 @@
 package peer.server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class TextServer extends AbstractServerPeer
@@ -11,14 +14,17 @@ public class TextServer extends AbstractServerPeer
 
     public void run()
     {
-        registerToServerRouter("8.8.8.8", 25565);
-        listenOnPort(25565);
+        Socket client = getClient();
 
-        while(true)
+        try
         {
-            Socket client = getClient();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-            //communicate with client
+            System.out.println(reader.readLine());
+        }
+        catch (IOException e)
+        {
+
         }
     }
 }

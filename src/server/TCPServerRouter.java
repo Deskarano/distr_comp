@@ -119,20 +119,20 @@ public class TCPServerRouter
                                     String[] splitResponse = response.split(" ");
 
                                     String peerIP = peerSocket.getInetAddress().getHostAddress();
-                                    String peerType = splitResponse[0];
+                                    String peerType = splitResponse[1];
 
-                                    if(splitResponse.length == 2)
+                                    if(splitResponse.length == 3)
                                     {
-                                        peerIP += ":" + splitResponse[1];
+                                        peerIP += ":" + splitResponse[2];
                                     }
 
                                     peerRoutingTable[i][0] = peerIP;
                                     peerRoutingTable[i][1] = peerType;
                                     peerRoutingTable[i][2] = peerSocket;
 
-                                    peerReader.close();
+                                    //peerReader.close();
 
-                                    System.out.println(HEADER + ": connected to" + peerType + " peer at " + peerIP);
+                                    System.out.println(HEADER + ": connected to " + peerType + " peer at " + peerIP);
                                 }
                                 catch (Exception e)
                                 {

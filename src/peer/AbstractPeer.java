@@ -31,10 +31,12 @@ public abstract class AbstractPeer
             BufferedReader serverRouterReader = new BufferedReader(new InputStreamReader(serverRouter.getInputStream()));
 
             //send initial message: peer type
-            serverRouterWriter.write(Protocol.HEADER_TYPE + this.type);
+            serverRouterWriter.println(Protocol.HEADER_TYPE + this.type);
 
             //wait for ServerRouter to be ready
             String response = serverRouterReader.readLine();
+
+            System.out.println("received response: " + response);
 
             if (response.equals(Protocol.MESSAGE_SR_START))
             {
