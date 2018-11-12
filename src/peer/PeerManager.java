@@ -37,7 +37,7 @@ public class PeerManager
                 client = new TextClient();
             }
 
-            client.registerToServerRouter(IP, Integer.parseInt(port));
+            client.registerToServerRouter(IP, Integer.parseInt(port), -1);
             client.run();
         }
         else
@@ -47,12 +47,17 @@ public class PeerManager
             System.out.print(HEADER + " >>> Type of server? (1) Text, (2) Image, (3) Video: ");
             choice = input.nextInt();
 
+            input.nextLine();
+
             if(choice == 1)
             {
                 server = new TextServer();
             }
 
-            server.registerToServerRouter(IP, Integer.parseInt(port));
+            System.out.print(HEADER + " >>> Port to listen on: ");
+            String listenPort = input.nextLine();
+
+            server.registerToServerRouter(IP, Integer.parseInt(port), Integer.parseInt(listenPort));
             server.run();
         }
     }

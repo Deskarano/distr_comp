@@ -15,7 +15,7 @@ public class TextClient extends AbstractClientPeer
 
     public void run()
     {
-        Socket server = connectToServer("text", "near");
+        Socket server = connectToServer("text", "other");
 
         try
         {

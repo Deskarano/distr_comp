@@ -14,6 +14,7 @@ public class TextServer extends AbstractServerPeer
 
     public void run()
     {
+        listenOnPort(9491);
         Socket client = getClient();
 
         try

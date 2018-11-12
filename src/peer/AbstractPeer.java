@@ -20,18 +20,24 @@ public abstract class AbstractPeer
         this.type = type;
     }
 
-    public boolean registerToServerRouter(String IP, int port)
+    public boolean registerToServerRouter(String routerIP, int routerPort, int listenPort)
     {
         try
         {
-            Socket serverRouter = new Socket(IP, port);
+            Socket serverRouter = new Socket(routerIP, routerPort);
 
             //init readers and writers
             PrintWriter serverRouterWriter = new PrintWriter(serverRouter.getOutputStream(), true);
             BufferedReader serverRouterReader = new BufferedReader(new InputStreamReader(serverRouter.getInputStream()));
 
             //send initial message: peer type
-            serverRouterWriter.println(Protocol.HEADER_TYPE + this.type);
+            String initMessage = Protocol.HEADER_TYPE + this.type;
+            if(listenPort != -1)
+            {
+                initMessage += " " + listenPort;
+            }
+
+            serverRouterWriter.println(initMessage);
 
             //wait for ServerRouter to be ready
             String response = serverRouterReader.readLine();
@@ -40,8 +46,8 @@ public abstract class AbstractPeer
 
             if (response.equals(Protocol.MESSAGE_SR_START))
             {
-                serverRouterIP = IP;
-                serverRouterPort = port;
+                serverRouterIP = routerIP;
+                serverRouterPort = routerPort;
                 return true;
             }
             else

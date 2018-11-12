@@ -78,6 +78,7 @@ public class HandleRequestThread extends Thread
 
         if (peerFound)
         {
+            System.out.println(HEADER + ": found peer in routing table, processing request");
             try
             {
                 PrintWriter peerWriter = new PrintWriter(peerSocket.getOutputStream(), true);
@@ -87,6 +88,8 @@ public class HandleRequestThread extends Thread
                 {
                     String input = peerReader.readLine();
                     String[] command = input.split(" ");
+
+                    System.out.println(HEADER + ": received request " + input);
 
                     switch (command[0])
                     {
