@@ -159,7 +159,7 @@ public class TCPServerRouter
                             BufferedReader readyReader = new BufferedReader(new InputStreamReader(otherServerRouter.getInputStream()));
 
                             System.out.println(HEADER + ": waiting for other ServerRouter to be ready");
-                            readyWriter.println(Protocol.MESSAGE_SR_READY);
+                            readyWriter.println(Protocol.HEADER_SR_READY + command[1]);
 
                             String response = readyReader.readLine();
                             System.out.println(HEADER + ": received " + response + ", starting!");
@@ -167,15 +167,17 @@ public class TCPServerRouter
                             readyWriter.close();
                             readyReader.close();
                             otherServerRouter.close();
+
+                            String[] responseSplit = response.split(" ");
+
+                            //pass args to request threads
+                            HandleRequestThread.otherServerRouterIP = otherServerRouterIP;
+                            HandleRequestThread.otherServerRouterPort = Integer.parseInt(responseSplit[1]);
                         }
                         catch (Exception e)
                         {
                             e.printStackTrace(System.out);
                         }
-
-                        //pass args to request threads
-                        HandleRequestThread.otherServerRouterIP = otherServerRouterIP;
-                        HandleRequestThread.otherServerRouterPort = otherServerRouterPort;
 
                         //start peer request listener
                         ServerSocket requestListener = null;

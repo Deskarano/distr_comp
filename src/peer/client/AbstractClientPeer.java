@@ -21,8 +21,8 @@ public abstract class AbstractClientPeer extends AbstractPeer
     {
         try
         {
+            System.out.println(HEADER + ": attempting to connect to ServerRouter at " + serverRouterIP + ":" + serverRouterPort);
             Socket serverRouter = new Socket(serverRouterIP, serverRouterPort);
-
             System.out.println(HEADER + ": connected to ServerRouter");
 
             PrintWriter serverRouterWriter = new PrintWriter(serverRouter.getOutputStream());

@@ -25,7 +25,7 @@ public abstract class AbstractPeer
         try
         {
             Socket serverRouter = new Socket(routerIP, routerPort);
-            System.out.println(HEADER + ": connected to ServerRouter at " + routerIP + ":" + listenPort);
+            System.out.println(HEADER + ": connected to ServerRouter at " + routerIP + ":" + routerPort);
 
             //init readers and writers
             PrintWriter serverRouterWriter = new PrintWriter(serverRouter.getOutputStream(), true);
@@ -46,13 +46,13 @@ public abstract class AbstractPeer
             String response = serverRouterReader.readLine();
 
             System.out.println(HEADER + ": received response " + response);
-
             String[] responseSplit = response.split(" ");
 
             if (responseSplit[0].equals(Protocol.HEADER_START))
             {
                 serverRouterIP = routerIP;
                 serverRouterPort = Integer.parseInt(responseSplit[1]);
+                System.out.println(HEADER + ": serverRouterIP = " + serverRouterIP + ", serverRouterPort = " + serverRouterPort);
                 return true;
             }
             else

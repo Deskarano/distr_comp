@@ -5,9 +5,7 @@ public class Protocol
     public static final String HEADER_TYPE = "type ";
     public static final String HEADER_REQUEST = "request ";
     public static final String HEADER_START = "start ";
-
-
-    public static final String MESSAGE_SR_READY = "ready";
+    public static final String HEADER_SR_READY = "ready ";
 
     public static final String REQUEST_COMMAND = "request";
     public static final String REQUEST_FROM_SAME = "same";

@@ -77,19 +77,30 @@ public class HandleRequestThread extends Thread
         String peerIP = peerSocket.getInetAddress().getHostAddress();
         boolean peerFound = false;
 
-        for (int i = 0; i < routingTable.length; i++)
+        if(!peerIP.equals(otherServerRouterIP))
         {
-            if (peerIP.equals(routingTable[i][0]))
+            for (int i = 0; i < routingTable.length; i++)
             {
-                peerFound = true;
-                routingTable[i][2] = peerSocket;
-                break;
+                if (peerIP.equals(routingTable[i][0]))
+                {
+                    peerFound = true;
+                    routingTable[i][2] = peerSocket;
+
+                    System.out.println(HEADER + ": found peer in routing table, processing request");
+                    break;
+                }
             }
         }
+        else
+        {
+            peerFound = true;
+
+            System.out.println(HEADER + ": connection is from other ServerRouter");
+        }
+
 
         if (peerFound)
         {
-            System.out.println(HEADER + ": found peer in routing table, processing request");
             try
             {
                 PrintWriter peerWriter = new PrintWriter(peerSocket.getOutputStream(), true);
@@ -146,7 +157,7 @@ public class HandleRequestThread extends Thread
                 }
 
                 System.out.println(HEADER + ": peer socket closed, exiting thread");
-                
+
                 peerWriter.close();
                 peerReader.close();
             }
