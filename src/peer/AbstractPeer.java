@@ -48,7 +48,7 @@ public abstract class AbstractPeer
             System.out.println(HEADER + ": received response " + response);
             String[] responseSplit = response.split(" ");
 
-            if (responseSplit[0].equals(Protocol.HEADER_START))
+            if (responseSplit[0].equals(Protocol.INIT_START))
             {
                 serverRouterIP = routerIP;
                 serverRouterPort = Integer.parseInt(responseSplit[1]);

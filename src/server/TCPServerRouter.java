@@ -198,7 +198,7 @@ public class TCPServerRouter
                             try
                             {
                                 PrintWriter peerWriter = new PrintWriter(((Socket) peerRoutingTable[i][2]).getOutputStream(), true);
-                                peerWriter.println(Protocol.HEADER_START + command[1]);
+                                peerWriter.println(Protocol.INIT_START + " " + command[1]);
 
                                 peerWriter.close();
                                 ((Socket) peerRoutingTable[i][2]).close();
