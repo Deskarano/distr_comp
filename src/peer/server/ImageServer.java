@@ -8,7 +8,7 @@ public class ImageServer extends AbstractServerPeer
     }
 
     @Override
-    public void run()
+    public void run(int port)
     {
 
     }
