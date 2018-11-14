@@ -12,9 +12,9 @@ public class TextServer extends AbstractServerPeer
         super("text");
     }
 
-    public void run()
+    public void run(int port)
     {
-        listenOnPort(9491);
+        listenOnPort(port);
         Socket client = getClient();
 
         try

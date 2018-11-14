@@ -58,7 +58,7 @@ public class PeerManager
             String listenPort = input.nextLine();
 
             server.registerToServerRouter(IP, Integer.parseInt(port), Integer.parseInt(listenPort));
-            server.run();
+            server.run(Integer.parseInt(listenPort));
         }
     }
 }

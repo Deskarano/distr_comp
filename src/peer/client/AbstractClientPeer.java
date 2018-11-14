@@ -25,7 +25,7 @@ public abstract class AbstractClientPeer extends AbstractPeer
             Socket serverRouter = new Socket(serverRouterIP, serverRouterPort);
             System.out.println(HEADER + ": connected to ServerRouter");
 
-            PrintWriter serverRouterWriter = new PrintWriter(serverRouter.getOutputStream());
+            PrintWriter serverRouterWriter = new PrintWriter(serverRouter.getOutputStream(), true);
             BufferedReader serverRouterReader = new BufferedReader(new InputStreamReader(serverRouter.getInputStream()));
 
             String request = Protocol.HEADER_REQUEST + type + " " + from;

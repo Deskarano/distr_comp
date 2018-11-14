@@ -52,12 +52,12 @@ public class HandleRequestThread extends Thread
 
             String request = Protocol.REQUEST_COMMAND + " " + type + " " + Protocol.REQUEST_FROM_SAME;
 
-            System.out.println(": sent request " + request);
+            System.out.println(HEADER + ": sent request " + request);
 
             serverRouterWriter.println(Protocol.REQUEST_COMMAND + " " + type + " " + Protocol.REQUEST_FROM_SAME);
             response = serverRouterReader.readLine();
 
-            System.out.println(": received response " + response);
+            System.out.println(HEADER + ": received response " + response);
 
             serverRouterWriter.close();
             serverRouterReader.close();
@@ -77,7 +77,12 @@ public class HandleRequestThread extends Thread
         String peerIP = peerSocket.getInetAddress().getHostAddress();
         boolean peerFound = false;
 
-        if(!peerIP.equals(otherServerRouterIP))
+        if (peerIP.equals(otherServerRouterIP))
+        {
+            peerFound = true;
+            System.out.println(HEADER + ": connection is from other ServerRouter");
+        }
+        else
         {
             for (int i = 0; i < routingTable.length; i++)
             {
@@ -91,12 +96,6 @@ public class HandleRequestThread extends Thread
                 }
             }
         }
-        else
-        {
-            peerFound = true;
-
-            System.out.println(HEADER + ": connection is from other ServerRouter");
-        }
 
 
         if (peerFound)
@@ -106,57 +105,54 @@ public class HandleRequestThread extends Thread
                 PrintWriter peerWriter = new PrintWriter(peerSocket.getOutputStream(), true);
                 BufferedReader peerReader = new BufferedReader(new InputStreamReader(peerSocket.getInputStream()));
 
-                while (!peerSocket.isClosed())
+                String input = peerReader.readLine();
+                String[] command = input.split(" ");
+
+                System.out.println(HEADER + ": received request " + input);
+
+                switch (command[0])
                 {
-                    String input = peerReader.readLine();
-                    String[] command = input.split(" ");
+                    case Protocol.REQUEST_COMMAND:
+                        String type = command[1];
+                        String from = command[2];
 
-                    System.out.println(HEADER + ": received request " + input);
+                        switch (from)
+                        {
+                            case Protocol.REQUEST_FROM_SAME:
+                                peerWriter.println(requestFromSame(type));
+                                break;
 
-                    switch (command[0])
-                    {
-                        case Protocol.REQUEST_COMMAND:
-                            String type = command[1];
-                            String from = command[2];
+                            case Protocol.REQUEST_FROM_OTHER:
+                                peerWriter.println(requestFromOther(type));
+                                break;
 
-                            switch (from)
-                            {
-                                case Protocol.REQUEST_FROM_SAME:
-                                    peerWriter.println(requestFromSame(type));
-                                    break;
+                            case Protocol.REQUEST_FROM_NEAR:
+                                String nearResult = requestFromSame(type);
+                                if (nearResult.equals(Protocol.RESPONE_NONE))
+                                {
+                                    nearResult = requestFromOther(type);
+                                }
 
-                                case Protocol.REQUEST_FROM_OTHER:
-                                    peerWriter.println(requestFromOther(type));
-                                    break;
+                                peerWriter.println(nearResult);
+                                break;
 
-                                case Protocol.REQUEST_FROM_NEAR:
-                                    String nearResult = requestFromSame(type);
-                                    if (nearResult.equals(Protocol.RESPONE_NONE))
-                                    {
-                                        nearResult = requestFromOther(type);
-                                    }
+                            case Protocol.REQUEST_FROM_FAR:
+                                String farResult = requestFromOther(type);
+                                if (farResult.equals(Protocol.RESPONE_NONE))
+                                {
+                                    farResult = requestFromSame(type);
+                                }
 
-                                    peerWriter.println(nearResult);
-                                    break;
+                                peerWriter.println(farResult);
+                                break;
 
-                                case Protocol.REQUEST_FROM_FAR:
-                                    String farResult = requestFromOther(type);
-                                    if (farResult.equals(Protocol.RESPONE_NONE))
-                                    {
-                                        farResult = requestFromSame(type);
-                                    }
-
-                                    peerWriter.println(farResult);
-                                    break;
-
-                                default:
-                                    peerWriter.println(Protocol.RESPONSE_INVALID);
-                                    break;
-                            }
-                    }
+                            default:
+                                peerWriter.println(Protocol.RESPONSE_INVALID);
+                                break;
+                        }
                 }
 
-                System.out.println(HEADER + ": peer socket closed, exiting thread");
+                System.out.println(HEADER + ": done with request");
 
                 peerWriter.close();
                 peerReader.close();
