@@ -18,26 +18,33 @@ public class TextServer extends AbstractServerPeer
     public void run(int port)
     {
         listenOnPort(port);
-        Socket client = getClient();
 
-        try
+        while(true)
         {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            PrintWriter writer = new PrintWriter(client.getOutputStream(), true);
+            final Socket client = getClient();
 
-            while(true)
+            System.out.println(HEADER + ": received connection from " + client.getInetAddress().getHostAddress());
+
+            new Thread(() ->
             {
-                String response = reader.readLine();
+                try
+                {
+                    BufferedReader clientReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                    PrintWriter clientWriter = new PrintWriter(client.getOutputStream(), true);
 
-                System.out.println(HEADER + ": received message" + response);
-                System.out.println(HEADER + ": responding with " + response.toUpperCase());
-
-                writer.println(response.toUpperCase());
-            }
-        }
-        catch (IOException e)
-        {
-
+                    String line;
+                    while((line = clientReader.readLine()) != null)
+                    {
+                        System.out.println(HEADER + " " + client.getInetAddress().getHostAddress() + " sent " + line);
+                        System.out.println(HEADER + " " + client.getInetAddress().getHostAddress() + " responding " + line.toUpperCase());
+                        clientWriter.println(line.toUpperCase());
+                    }
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace(System.out);
+                }
+            }).start();
         }
     }
 }

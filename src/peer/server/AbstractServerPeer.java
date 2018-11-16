@@ -19,18 +19,8 @@ public abstract class AbstractServerPeer extends AbstractPeer
     {
         try
         {
-            if (serverListener == null)
-            {
-                System.out.println(HEADER + ": starting new serversocket on port " + port);
-                serverListener = new ServerSocket(port);
-
-            }
-            else if(serverListener.getLocalPort() != port)
-            {
-                System.out.println(HEADER + ": switching serversocket to port " + port);
-                serverListener.close();
-                serverListener = new ServerSocket(port);
-            }
+            System.out.println(HEADER + ": starting new serversocket on port " + port);
+            serverListener = new ServerSocket(port);
         }
         catch (Exception e)
         {
@@ -48,7 +38,7 @@ public abstract class AbstractServerPeer extends AbstractPeer
 
             return client;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return null;

@@ -1,8 +1,8 @@
 package peer.server;
 
-public class VideoServer extends AbstractServerPeer
+public class AudioServer extends AbstractServerPeer
 {
-    public VideoServer()
+    public AudioServer()
     {
         super("video");
     }

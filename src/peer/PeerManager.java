@@ -14,16 +14,15 @@ public class PeerManager
     {
         Scanner input = new Scanner(System.in);
 
-        System.out.print(HEADER + " >>> Do you want to run a (1) client or (2) server? ");
-        int choice = input.nextInt();
-
-        input.nextLine();
-
         System.out.print(HEADER + " >>> IP of ServerRouter? ");
         String IP = input.nextLine();
 
         System.out.print(HEADER + " >>> Port of ServerRouter? ");
         String port = input.nextLine();
+
+        System.out.print(HEADER + " >>> Do you want to run a (1) client or (2) server? ");
+        int choice = input.nextInt();
+        input.nextLine();
 
         if(choice == 1)
         {
@@ -44,6 +43,9 @@ public class PeerManager
         {
             AbstractServerPeer server = null;
 
+            System.out.print(HEADER + " >>> Port to listen on: ");
+            String listenPort = input.nextLine();
+
             System.out.print(HEADER + " >>> Type of server? (1) Text, (2) Image, (3) Video: ");
             choice = input.nextInt();
 
@@ -53,9 +55,6 @@ public class PeerManager
             {
                 server = new TextServer();
             }
-
-            System.out.print(HEADER + " >>> Port to listen on: ");
-            String listenPort = input.nextLine();
 
             server.registerToServerRouter(IP, Integer.parseInt(port), Integer.parseInt(listenPort));
             server.run(Integer.parseInt(listenPort));

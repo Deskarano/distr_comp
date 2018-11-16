@@ -1,8 +1,8 @@
 package peer.client;
 
-public class VideoClient extends AbstractClientPeer
+public class AudioClient extends AbstractClientPeer
 {
-    public VideoClient()
+    public AudioClient()
     {
         super("video");
     }
