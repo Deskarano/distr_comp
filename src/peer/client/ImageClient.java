@@ -94,7 +94,6 @@ public class ImageClient extends AbstractClientPeer
 
                             serverOutputStream.write(sendSize);
                             serverOutputStream.write(byteArrayOutputStream.toByteArray());
-                            Thread.sleep(5000);
                             serverOutputStream.flush();
 
                             System.out.println(HEADER + ": sent image, waiting for response size");
@@ -110,7 +109,7 @@ public class ImageClient extends AbstractClientPeer
                             int receivedBytes = 0;
                             while(receivedBytes != recvSize)
                             {
-                                int chunkSize = serverInputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes + 1);
+                                int chunkSize = serverInputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes);
                                 receivedBytes += chunkSize;
 
                                 System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
@@ -127,10 +126,7 @@ public class ImageClient extends AbstractClientPeer
                         {
                             e.printStackTrace(System.out);
                         }
-                        catch (InterruptedException e)
-                        {
-                            e.printStackTrace(System.out);
-                        }
+
                         break;
 
                     case COMMAND_EXIT:
