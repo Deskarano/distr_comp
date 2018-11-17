@@ -61,7 +61,7 @@ public class ImageServer extends AbstractServerPeer
                         ImageProducer producer = new FilteredImageSource(receivedImage.getSource(), filter);
                         Image rendered = Toolkit.getDefaultToolkit().createImage(producer);
 
-                        BufferedImage responseImage = new BufferedImage(rendered.getWidth(null), rendered.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+                        BufferedImage responseImage = new BufferedImage(rendered.getWidth(null), rendered.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
                         responseImage.getGraphics().drawImage(rendered, 0, 0, null);
                         responseImage.getGraphics().dispose();
 
