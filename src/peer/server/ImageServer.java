@@ -57,6 +57,7 @@ public class ImageServer extends AbstractServerPeer
 
                         BufferedImage receivedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
 
+                        /*
                         ImageFilter filter = new GrayFilter(true, 50);
                         ImageProducer producer = new FilteredImageSource(receivedImage.getSource(), filter);
                         Image rendered = Toolkit.getDefaultToolkit().createImage(producer);
@@ -65,11 +66,12 @@ public class ImageServer extends AbstractServerPeer
                         responseImage.getGraphics().drawImage(rendered, 0, 0, null);
                         Thread.sleep(2000);
                         responseImage.getGraphics().dispose();
+                        */
 
                         System.out.println(HEADER + ": done converting image");
 
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        ImageIO.write(responseImage, "jpg", byteArrayOutputStream);
+                        ImageIO.write(receivedImage, "jpg", byteArrayOutputStream);
 
                         System.out.println(HEADER + ": response image has size " + byteArrayOutputStream.size());
 
@@ -88,10 +90,12 @@ public class ImageServer extends AbstractServerPeer
                 {
                     e.printStackTrace(System.out);
                 }
+                /*
                 catch (InterruptedException e)
                 {
                     e.printStackTrace(System.out);
                 }
+                */
             }).start();
         }
     }
