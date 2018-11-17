@@ -1,6 +1,7 @@
 package peer.client;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
@@ -90,6 +91,12 @@ public class ImageClient extends AbstractClientPeer
                             System.out.println(HEADER + ": image " + command[1] + " has size " + byteArrayOutputStream.size());
 
                             byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+
+                            if(ByteBuffer.wrap(sendSize).asIntBuffer().get() != byteArrayOutputStream.size())
+                            {
+                                System.out.println("SIZE ENCODING ERROR");
+                            }
+
                             serverOutputStream.write(sendSize);
                             serverOutputStream.write(byteArrayOutputStream.toByteArray());
                             serverOutputStream.flush();
