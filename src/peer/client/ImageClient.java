@@ -106,7 +106,15 @@ public class ImageClient extends AbstractClientPeer
                             System.out.println(HEADER + ": response image has size " + recvSize);
 
                             byte[] imageBytes = new byte[recvSize];
-                            serverInputStream.read(imageBytes);
+
+                            int receivedBytes = 0;
+                            while(receivedBytes != recvSize)
+                            {
+                                int chunkSize = serverInputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes + 1);
+                                receivedBytes += chunkSize;
+
+                                System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
+                            }
 
                             System.out.println(HEADER + ": received response image data");
 

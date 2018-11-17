@@ -50,14 +50,15 @@ public class ImageServer extends AbstractServerPeer
                             break;
                         }
 
-                        Thread.sleep(5000);
-
                         byte[] imageBytes = new byte[recvSize];
-                        int receivedImageBytes = inputStream.read(imageBytes);
 
-                        if(receivedImageBytes != recvSize)
+                        int receivedBytes = 0;
+                        while(receivedBytes != recvSize)
                         {
-                            System.out.println("ERROR DID NOT RECEIVE ALL IMAGE BYTES");
+                            int chunkSize = inputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes + 1);
+                            receivedBytes += chunkSize;
+
+                            System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
                         }
 
                         System.out.println(HEADER + ": received image data, converting");
@@ -96,10 +97,6 @@ public class ImageServer extends AbstractServerPeer
                     outputStream.close();
                 }
                 catch (IOException e)
-                {
-                    e.printStackTrace(System.out);
-                }
-                catch (InterruptedException e)
                 {
                     e.printStackTrace(System.out);
                 }
