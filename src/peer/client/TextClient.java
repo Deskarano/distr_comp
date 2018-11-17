@@ -31,9 +31,10 @@ public class TextClient extends AbstractClientPeer
         Scanner input = new Scanner(System.in);
         Socket server = null;
 
-        try
+
+        while (true)
         {
-            while (true)
+            try
             {
                 System.out.print(HEADER + " >>> ");
                 String read = input.nextLine();
@@ -96,7 +97,7 @@ public class TextClient extends AbstractClientPeer
                         break;
 
                     case COMMAND_SEND_STR:
-                        String str = command[2];
+                        String str = command[1];
 
                         try
                         {
@@ -135,10 +136,10 @@ public class TextClient extends AbstractClientPeer
                         return;
                 }
             }
-        }
-        catch(ArrayIndexOutOfBoundsException e)
-        {
-            e.printStackTrace(System.out);
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                e.printStackTrace(System.out);
+            }
         }
     }
 }
