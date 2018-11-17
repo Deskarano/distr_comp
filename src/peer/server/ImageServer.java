@@ -51,7 +51,12 @@ public class ImageServer extends AbstractServerPeer
                         }
 
                         byte[] imageBytes = new byte[recvSize];
-                        inputStream.read(imageBytes);
+                        int receivedImageBytes = inputStream.read(imageBytes);
+
+                        if(receivedImageBytes != recvSize)
+                        {
+                            System.out.println("ERROR DID NOT RECEIVE ALL IMAGE BYTES");
+                        }
 
                         System.out.println(HEADER + ": received image data, converting");
 

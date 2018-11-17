@@ -92,11 +92,6 @@ public class ImageClient extends AbstractClientPeer
 
                             byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
 
-                            if(ByteBuffer.wrap(sendSize).asIntBuffer().get() != byteArrayOutputStream.size())
-                            {
-                                System.out.println("SIZE ENCODING ERROR");
-                            }
-
                             serverOutputStream.write(sendSize);
                             serverOutputStream.write(byteArrayOutputStream.toByteArray());
                             serverOutputStream.flush();
