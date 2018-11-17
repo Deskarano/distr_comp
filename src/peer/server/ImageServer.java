@@ -57,6 +57,8 @@ public class ImageServer extends AbstractServerPeer
 
                         BufferedImage receivedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
 
+                        ImageIO.write(receivedImage, "jpg", new File("received.jpg"));
+
                         /*
                         ImageFilter filter = new GrayFilter(true, 50);
                         ImageProducer producer = new FilteredImageSource(receivedImage.getSource(), filter);
