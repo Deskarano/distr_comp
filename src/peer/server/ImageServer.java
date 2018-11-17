@@ -63,7 +63,7 @@ public class ImageServer extends AbstractServerPeer
 
                         BufferedImage responseImage = new BufferedImage(rendered.getWidth(null), rendered.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
                         responseImage.getGraphics().drawImage(rendered, 0, 0, null);
-                        responseImage.getGraphics().dispose();
+                        //responseImage.getGraphics().dispose();
 
                         System.out.println(HEADER + ": done converting image");
 
