@@ -67,16 +67,13 @@ public class ImageServer extends AbstractServerPeer
 
                         ImageIO.write(receivedImage, "jpg", new File("received.jpg"));
 
-                        /*
                         ImageFilter filter = new GrayFilter(true, 50);
                         ImageProducer producer = new FilteredImageSource(receivedImage.getSource(), filter);
                         Image rendered = Toolkit.getDefaultToolkit().createImage(producer);
 
                         BufferedImage responseImage = new BufferedImage(rendered.getWidth(null), rendered.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
                         responseImage.getGraphics().drawImage(rendered, 0, 0, null);
-                        Thread.sleep(2000);
                         responseImage.getGraphics().dispose();
-                        */
 
                         System.out.println(HEADER + ": done converting image");
 
