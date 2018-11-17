@@ -1,8 +1,10 @@
 package peer;
 
 import peer.client.AbstractClientPeer;
+import peer.client.ImageClient;
 import peer.client.TextClient;
 import peer.server.AbstractServerPeer;
+import peer.server.ImageServer;
 import peer.server.TextServer;
 
 import java.util.Scanner;
@@ -28,12 +30,16 @@ public class PeerManager
         {
             AbstractClientPeer client = null;
 
-            System.out.print(HEADER + " >>> Type of client? (1) Text, (2) Image, (3) Video: ");
+            System.out.print(HEADER + " >>> Type of client? (1) Text, (2) Image, (3) Audio: ");
             choice = input.nextInt();
 
             if(choice == 1)
             {
                 client = new TextClient();
+            }
+            else if(choice == 2)
+            {
+                client = new ImageClient();
             }
 
             client.registerToServerRouter(IP, Integer.parseInt(port), -1);
@@ -46,7 +52,7 @@ public class PeerManager
             System.out.print(HEADER + " >>> Port to listen on: ");
             String listenPort = input.nextLine();
 
-            System.out.print(HEADER + " >>> Type of server? (1) Text, (2) Image, (3) Video: ");
+            System.out.print(HEADER + " >>> Type of server? (1) Text, (2) Image, (3) Audio: ");
             choice = input.nextInt();
 
             input.nextLine();
@@ -54,6 +60,10 @@ public class PeerManager
             if(choice == 1)
             {
                 server = new TextServer();
+            }
+            else if(choice == 2)
+            {
+                server = new ImageServer();
             }
 
             server.registerToServerRouter(IP, Integer.parseInt(port), Integer.parseInt(listenPort));
