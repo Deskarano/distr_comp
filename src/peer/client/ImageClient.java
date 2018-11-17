@@ -94,7 +94,7 @@ public class ImageClient extends AbstractClientPeer
 
                             serverOutputStream.write(sendSize);
                             serverOutputStream.write(byteArrayOutputStream.toByteArray());
-                            Thread.sleep(1000);
+                            Thread.sleep(5000);
                             serverOutputStream.flush();
 
                             System.out.println(HEADER + ": sent image, waiting for response size");

@@ -50,6 +50,8 @@ public class ImageServer extends AbstractServerPeer
                             break;
                         }
 
+                        Thread.sleep(5000);
+
                         byte[] imageBytes = new byte[recvSize];
                         int receivedImageBytes = inputStream.read(imageBytes);
 
@@ -97,12 +99,10 @@ public class ImageServer extends AbstractServerPeer
                 {
                     e.printStackTrace(System.out);
                 }
-                /*
                 catch (InterruptedException e)
                 {
                     e.printStackTrace(System.out);
                 }
-                */
             }).start();
         }
     }
