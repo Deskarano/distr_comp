@@ -78,7 +78,7 @@ public class ImageServer extends AbstractServerPeer
                         System.out.println(HEADER + ": done converting image");
 
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        ImageIO.write(receivedImage, "jpg", byteArrayOutputStream);
+                        ImageIO.write(responseImage, "jpg", byteArrayOutputStream);
 
                         System.out.println(HEADER + ": response image has size " + byteArrayOutputStream.size());
 
