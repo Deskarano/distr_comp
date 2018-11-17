@@ -44,6 +44,7 @@ public class ImageServer extends AbstractServerPeer
                         inputStream.read(recvSizeBytes);
                         int recvSize = ByteBuffer.wrap(recvSizeBytes).asIntBuffer().get();
 
+                        System.out.println(HEADER + ": receiving image of size " + recvSize);
                         if(recvSize == 0)
                         {
                             break;
@@ -52,21 +53,31 @@ public class ImageServer extends AbstractServerPeer
                         byte[] imageBytes = new byte[recvSize];
                         inputStream.read(imageBytes);
 
+                        System.out.println(HEADER + ": received image data, converting");
+
                         BufferedImage receivedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+
                         ImageFilter filter = new GrayFilter(true, 50);
                         ImageProducer producer = new FilteredImageSource(receivedImage.getSource(), filter);
                         Image rendered = Toolkit.getDefaultToolkit().createImage(producer);
+
                         BufferedImage responseImage = new BufferedImage(rendered.getWidth(null), rendered.getHeight(null), BufferedImage.TYPE_INT_ARGB);
                         responseImage.getGraphics().drawImage(rendered, 0, 0, null);
                         responseImage.getGraphics().dispose();
 
+                        System.out.println(HEADER + ": done converting image");
+
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         ImageIO.write(responseImage, "jpg", byteArrayOutputStream);
+
+                        System.out.println(HEADER + ": response image has size " + byteArrayOutputStream.size());
 
                         byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
                         outputStream.write(sendSize);
                         outputStream.write(byteArrayOutputStream.toByteArray());
                         outputStream.flush();
+
+                        System.out.println(HEADER + ": sent response image data");
                     }
 
                     inputStream.close();

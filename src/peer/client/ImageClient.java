@@ -1,7 +1,6 @@
 package peer.client;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
@@ -65,6 +64,9 @@ public class ImageClient extends AbstractClientPeer
                     case COMMAND_DISCONNECT:
                         try
                         {
+                            serverOutputStream.write(new byte[]{0, 0, 0, 0});
+                            serverOutputStream.flush();
+
                             if (server != null)
                             {
                                 server.close();
@@ -85,20 +87,30 @@ public class ImageClient extends AbstractClientPeer
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                             ImageIO.write(sendImage, "jpg", byteArrayOutputStream);
 
+                            System.out.println(HEADER + ": image " + command[1] + " has size " + byteArrayOutputStream.size());
+
                             byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
                             serverOutputStream.write(sendSize);
                             serverOutputStream.write(byteArrayOutputStream.toByteArray());
                             serverOutputStream.flush();
 
+                            System.out.println(HEADER + ": sent image, waiting for response size");
+
                             byte[] recvSizeBytes = new byte[4];
                             serverInputStream.read(recvSizeBytes);
                             int recvSize = ByteBuffer.wrap(recvSizeBytes).asIntBuffer().get();
 
+                            System.out.println(HEADER + ": response image has size " + recvSize);
+
                             byte[] imageBytes = new byte[recvSize];
                             serverInputStream.read(imageBytes);
 
+                            System.out.println(HEADER + ": received response image data");
+
                             BufferedImage receivedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
                             ImageIO.write(receivedImage, "jpg", new File(command[2]));
+
+                            System.out.println(HEADER + ": saved response image as " + command[2]);
                         }
                         catch (IOException e)
                         {
