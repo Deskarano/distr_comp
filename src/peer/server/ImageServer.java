@@ -55,7 +55,7 @@ public class ImageServer extends AbstractServerPeer
                         int receivedBytes = 0;
                         while(receivedBytes != recvSize)
                         {
-                            int chunkSize = inputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes + 1);
+                            int chunkSize = inputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes);
                             receivedBytes += chunkSize;
 
                             System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
