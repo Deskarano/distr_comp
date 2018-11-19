@@ -44,22 +44,22 @@ public class AudioServer extends AbstractServerPeer
                             break;
                         }
 
-                        byte[] inputBytes = new byte[recvSize];
+                        byte[] inputByteBuffer = new byte[8192];
+                        File inputFile = new File("in.mp3");
+                        FileOutputStream fileOutputStream = new FileOutputStream(inputFile);
 
                         int receivedBytes = 0;
                         while(receivedBytes != recvSize)
                         {
-                            int chunkSize = clientInputStream.read(inputBytes, receivedBytes, recvSize - receivedBytes);
+                            int chunkSize = clientInputStream.read(inputByteBuffer, 0, 8192);
                             receivedBytes += chunkSize;
 
                             System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
+                            fileOutputStream.write(inputByteBuffer);
                         }
 
                         System.out.println(HEADER + ": received audio data, converting");
 
-                        File inputFile = new File("in.mp3");
-                        FileOutputStream fileOutputStream = new FileOutputStream(inputFile);
-                        fileOutputStream.write(inputBytes);
                         fileOutputStream.flush();
                         fileOutputStream.close();
 

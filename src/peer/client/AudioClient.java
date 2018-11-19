@@ -110,22 +110,22 @@ public class AudioClient extends AbstractClientPeer
 
                             System.out.println(HEADER + ": converted file has size " + recvSize);
 
-                            byte[] convertedBytes = new byte[recvSize];
+                            byte[] outputByteBuffer = new byte[8192];
+                            File resultFile = new File(command[2]);
+                            FileOutputStream fileOutputStream = new FileOutputStream(resultFile);
 
                             int receivedBytes = 0;
                             while(receivedBytes != recvSize)
                             {
-                                int chunkSize = serverInputStream.read(convertedBytes, receivedBytes, recvSize - receivedBytes);
+                                int chunkSize = serverInputStream.read(outputByteBuffer, 0, 8192);
                                 receivedBytes += chunkSize;
 
                                 System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
+
+                                fileOutputStream.write(outputByteBuffer);
                             }
 
                             System.out.println(HEADER + ": received converted data, writing to file");
-
-                            File resultFile = new File(command[2]);
-                            FileOutputStream fileOutputStream = new FileOutputStream(resultFile);
-                            fileOutputStream.write(convertedBytes);
                             fileOutputStream.flush();
                         }
                         catch (IOException e)
