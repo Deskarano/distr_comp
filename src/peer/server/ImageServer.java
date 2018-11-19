@@ -34,14 +34,14 @@ public class ImageServer extends AbstractServerPeer
             {
                 try
                 {
-                    InputStream inputStream = client.getInputStream();
-                    OutputStream outputStream = client.getOutputStream();
+                    InputStream clientInputStream = client.getInputStream();
+                    OutputStream clientOutputStream = client.getOutputStream();
 
                     while(true)
                     {
                         byte[] recvSizeBytes = new byte[4];
 
-                        inputStream.read(recvSizeBytes);
+                        clientInputStream.read(recvSizeBytes);
                         int recvSize = ByteBuffer.wrap(recvSizeBytes).asIntBuffer().get();
 
                         System.out.println(HEADER + ": receiving image of size " + recvSize);
@@ -55,7 +55,7 @@ public class ImageServer extends AbstractServerPeer
                         int receivedBytes = 0;
                         while(receivedBytes != recvSize)
                         {
-                            int chunkSize = inputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes);
+                            int chunkSize = clientInputStream.read(imageBytes, receivedBytes, recvSize - receivedBytes);
                             receivedBytes += chunkSize;
 
                             System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
@@ -64,9 +64,6 @@ public class ImageServer extends AbstractServerPeer
                         System.out.println(HEADER + ": received image data, converting");
 
                         BufferedImage receivedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
-
-                        ImageIO.write(receivedImage, "jpg", new File("received.jpg"));
-
                         ImageFilter filter = new GrayFilter(true, 50);
                         ImageProducer producer = new FilteredImageSource(receivedImage.getSource(), filter);
                         Image rendered = Toolkit.getDefaultToolkit().createImage(producer);
@@ -83,15 +80,17 @@ public class ImageServer extends AbstractServerPeer
                         System.out.println(HEADER + ": response image has size " + byteArrayOutputStream.size());
 
                         byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
-                        outputStream.write(sendSize);
-                        outputStream.write(byteArrayOutputStream.toByteArray());
-                        outputStream.flush();
+                        clientOutputStream.write(sendSize);
+                        clientOutputStream.write(byteArrayOutputStream.toByteArray());
+                        clientOutputStream.flush();
+
+                         byteArrayOutputStream.close();
 
                         System.out.println(HEADER + ": sent response image data");
                     }
 
-                    inputStream.close();
-                    outputStream.close();
+                    clientInputStream.close();
+                    clientOutputStream.close();
                 }
                 catch (IOException e)
                 {
