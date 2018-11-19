@@ -10,7 +10,7 @@ public class AudioServer extends AbstractServerPeer
     private static final String HEADER = "(AudioServer)";
     public AudioServer()
     {
-        super("video");
+        super("audio");
     }
 
     @Override

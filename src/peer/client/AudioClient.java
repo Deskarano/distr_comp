@@ -19,7 +19,7 @@ public class AudioClient extends AbstractClientPeer
 
     public AudioClient()
     {
-        super("video");
+        super("audio");
     }
 
     private Socket connectToServer(String from)
