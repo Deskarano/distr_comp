@@ -109,7 +109,7 @@ public class AudioServer extends AbstractServerPeer
                 }
                 catch(UnsupportedAudioFileException e)
                 {
-
+                    e.printStackTrace(System.out);
                 }
                 catch (IOException e)
                 {
