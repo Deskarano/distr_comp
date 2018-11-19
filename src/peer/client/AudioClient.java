@@ -122,7 +122,7 @@ public class AudioClient extends AbstractClientPeer
 
                                 System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
 
-                                fileOutputStream.write(outputByteBuffer);
+                                fileOutputStream.write(outputByteBuffer, 0, chunkSize);
                             }
 
                             System.out.println(HEADER + ": received converted data, writing to file");

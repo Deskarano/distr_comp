@@ -55,7 +55,7 @@ public class AudioServer extends AbstractServerPeer
                             receivedBytes += chunkSize;
 
                             System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
-                            fileOutputStream.write(inputByteBuffer);
+                            fileOutputStream.write(inputByteBuffer, 0, chunkSize);
                         }
 
                         System.out.println(HEADER + ": received audio data, converting");
