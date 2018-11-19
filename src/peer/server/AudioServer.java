@@ -86,22 +86,33 @@ public class AudioServer extends AbstractServerPeer
                         File outputFile = new File("out.wav");
                         AudioSystem.write(samples, AudioFileFormat.Type.WAVE, outputFile);
 
+                        inputStream.close();
+                        samples.close();
+
                         System.out.println(HEADER + ": done converting file");
 
                         FileInputStream fileInputStream = new FileInputStream(outputFile);
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-                        byteArrayOutputStream.write(fileInputStream.readAllBytes());
-                        fileInputStream.close();
+                        System.out.println(HEADER + ": output file has size " + outputFile.length());
 
-                        System.out.println(HEADER + ": output file has size " + byteArrayOutputStream.size());
-
-                        byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+                        byte[] sendSize = ByteBuffer.allocate(4).putInt((int) outputFile.length()).array();
                         clientOutputStream.write(sendSize);
-                        clientOutputStream.write(byteArrayOutputStream.toByteArray());
-                        clientOutputStream.flush();
 
-                        byteArrayOutputStream.close();
+                        byte[] outputByteBuffer = new byte[8192];
+                        int sentBytes = 0;
+
+                        while(sentBytes != outputFile.length())
+                        {
+                            int chunkSize = fileInputStream.read(outputByteBuffer, 0, 8192);
+                            sentBytes += chunkSize;
+
+                            System.out.println(HEADER + ": sent chunk of size " + chunkSize + ", sentBytes = " + sentBytes);
+
+                            clientOutputStream.write(outputByteBuffer, 0, chunkSize);
+                        }
+
+                        clientOutputStream.flush();
+                        fileInputStream.close();
                     }
 
                     clientInputStream.close();
