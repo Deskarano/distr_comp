@@ -1,9 +1,11 @@
 package peer;
 
 import peer.client.AbstractClientPeer;
+import peer.client.AudioClient;
 import peer.client.ImageClient;
 import peer.client.TextClient;
 import peer.server.AbstractServerPeer;
+import peer.server.AudioServer;
 import peer.server.ImageServer;
 import peer.server.TextServer;
 
@@ -41,6 +43,10 @@ public class PeerManager
             {
                 client = new ImageClient();
             }
+            else if(choice == 3)
+            {
+                client = new AudioClient();
+            }
 
             client.registerToServerRouter(IP, Integer.parseInt(port), -1);
             client.run();
@@ -64,6 +70,10 @@ public class PeerManager
             else if(choice == 2)
             {
                 server = new ImageServer();
+            }
+            else if(choice == 3)
+            {
+                server = new AudioServer();
             }
 
             server.registerToServerRouter(IP, Integer.parseInt(port), Integer.parseInt(listenPort));
