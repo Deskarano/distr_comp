@@ -63,8 +63,12 @@ public class AudioServer extends AbstractServerPeer
                         fileOutputStream.flush();
                         fileOutputStream.close();
 
+                        System.out.println(HEADER + ": flushed fileOutputStream");
+
                         AudioInputStream inputStream = AudioSystem.getAudioInputStream(inputFile);
                         AudioFormat baseFormat = inputStream.getFormat();
+
+                        System.out.println(HEADER + ": got input AudioStream");
 
                         AudioFormat convertedFormat = new AudioFormat(
                                 AudioFormat.Encoding.PCM_SIGNED,
@@ -76,6 +80,8 @@ public class AudioServer extends AbstractServerPeer
                                 false);
 
                         AudioInputStream samples = AudioSystem.getAudioInputStream(convertedFormat, inputStream);
+
+                        System.out.println(HEADER + ": got samples from file, writing out");
 
                         File outputFile = new File("out.wav");
                         AudioSystem.write(samples, AudioFileFormat.Type.WAVE, outputFile);
