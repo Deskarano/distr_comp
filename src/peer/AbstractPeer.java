@@ -73,10 +73,10 @@ public abstract class AbstractPeer
         int bytesCopied = 0;
 
 
-        while(bytesCopied != length)
+        while(bytesCopied < length)
         {
             int chunkSize = input.read(buffer, 0, bufSize);
-            output.write(buffer, 0, bufSize);
+            output.write(buffer, 0, chunkSize);
             bytesCopied += chunkSize;
 
 
