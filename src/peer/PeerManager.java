@@ -55,9 +55,6 @@ public class PeerManager
         {
             AbstractServerPeer server = null;
 
-            System.out.print(HEADER + " >>> Port to listen on: ");
-            String listenPort = input.nextLine();
-
             System.out.print(HEADER + " >>> Type of server? (1) Text, (2) Image, (3) Audio: ");
             choice = input.nextInt();
 
@@ -75,6 +72,9 @@ public class PeerManager
             {
                 server = new AudioServer();
             }
+
+            System.out.print(HEADER + " >>> Port to listen on: ");
+            String listenPort = input.nextLine();
 
             server.registerToServerRouter(IP, Integer.parseInt(port), Integer.parseInt(listenPort));
             server.run(Integer.parseInt(listenPort));

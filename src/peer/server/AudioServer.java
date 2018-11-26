@@ -33,6 +33,7 @@ public class AudioServer extends AbstractServerPeer
 
                     while(true)
                     {
+                        // receive input size
                         byte[] recvSizeBytes = new byte[4];
 
                         clientInputStream.read(recvSizeBytes);
@@ -44,32 +45,21 @@ public class AudioServer extends AbstractServerPeer
                             break;
                         }
 
-                        byte[] inputByteBuffer = new byte[8192];
+                        // receive input data
                         File inputFile = new File("in.mp3");
                         FileOutputStream fileOutputStream = new FileOutputStream(inputFile);
-
-                        int receivedBytes = 0;
-                        while(receivedBytes != recvSize)
-                        {
-                            int chunkSize = clientInputStream.read(inputByteBuffer, 0, 8192);
-                            receivedBytes += chunkSize;
-
-                            System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
-                            fileOutputStream.write(inputByteBuffer, 0, chunkSize);
-                        }
+                        transferStreams(recvSize, 8192, clientInputStream, fileOutputStream);
+                        fileOutputStream.close();
 
                         System.out.println(HEADER + ": received audio data, converting");
 
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
-
-                        System.out.println(HEADER + ": flushed fileOutputStream");
-
+                        // convert the file: first get input properties
                         AudioInputStream inputStream = AudioSystem.getAudioInputStream(inputFile);
                         AudioFormat baseFormat = inputStream.getFormat();
 
                         System.out.println(HEADER + ": got input AudioStream");
 
+                        // then create output properties and stream
                         AudioFormat convertedFormat = new AudioFormat(
                                 AudioFormat.Encoding.PCM_SIGNED,
                                 baseFormat.getSampleRate(),
@@ -78,40 +68,31 @@ public class AudioServer extends AbstractServerPeer
                                 baseFormat.getChannels() * 2,
                                 baseFormat.getSampleRate(),
                                 false);
-
                         AudioInputStream samples = AudioSystem.getAudioInputStream(convertedFormat, inputStream);
 
                         System.out.println(HEADER + ": got samples from file, writing out");
 
+                        // write out the converted data
                         File outputFile = new File("out.wav");
                         AudioSystem.write(samples, AudioFileFormat.Type.WAVE, outputFile);
 
                         inputStream.close();
                         samples.close();
 
+                        inputFile.delete();
+                        outputFile.delete();
+
                         System.out.println(HEADER + ": done converting file");
 
-                        FileInputStream fileInputStream = new FileInputStream(outputFile);
-
-                        System.out.println(HEADER + ": output file has size " + outputFile.length());
+                        // send size of output file
+                        System.out.println(HEADER + ": output file has size " + outputFile.length() + ", sending data");
 
                         byte[] sendSize = ByteBuffer.allocate(4).putInt((int) outputFile.length()).array();
                         clientOutputStream.write(sendSize);
 
-                        byte[] outputByteBuffer = new byte[8192];
-                        int sentBytes = 0;
-
-                        while(sentBytes != outputFile.length())
-                        {
-                            int chunkSize = fileInputStream.read(outputByteBuffer, 0, 8192);
-                            sentBytes += chunkSize;
-
-                            System.out.println(HEADER + ": sent chunk of size " + chunkSize + ", sentBytes = " + sentBytes);
-
-                            clientOutputStream.write(outputByteBuffer, 0, chunkSize);
-                        }
-
-                        clientOutputStream.flush();
+                        // send output data
+                        FileInputStream fileInputStream = new FileInputStream(outputFile);
+                        transferStreams((int) outputFile.length(), 8192, fileInputStream, clientOutputStream);
                         fileInputStream.close();
                     }
 

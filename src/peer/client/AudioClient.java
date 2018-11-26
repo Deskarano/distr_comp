@@ -1,8 +1,5 @@
 package peer.client;
 
-import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -72,6 +69,8 @@ public class AudioClient extends AbstractClientPeer
                             {
                                 server.close();
                             }
+
+                            System.out.println(HEADER + ": disconnected");
                         }
                         catch (IOException e)
                         {
@@ -83,56 +82,35 @@ public class AudioClient extends AbstractClientPeer
                     case COMMAND_SEND_AUDIO: // args: [source_file] [dest_file]
                         try
                         {
+                            // read input file
                             File audioFile = new File(command[1]);
-                            FileInputStream fileInputStream = new FileInputStream(audioFile);
 
-                            System.out.println(HEADER + ": file " + command[1] + " has size " + audioFile.length());
+                            System.out.println(HEADER + ": file " + command[1] + " has size " + audioFile.length() + ", sending data");
 
+                            // send size of input data
                             byte[] sendSizeBytes = ByteBuffer.allocate(4).putInt((int) audioFile.length()).array();
                             serverOutputStream.write(sendSizeBytes);
 
-                            byte[] inputByteBuffer = new byte[8192];
-                            int sentBytes = 0;
-
-                            while(sentBytes != audioFile.length())
-                            {
-                                int chunkSize = fileInputStream.read(inputByteBuffer, 0, 8192);
-                                sentBytes += chunkSize;
-
-                                System.out.println(HEADER + ": sent chunk of size " + chunkSize + ", sentBytes = " + sentBytes);
-
-                                serverOutputStream.write(inputByteBuffer, 0, chunkSize);
-                            }
-
-                            serverOutputStream.flush();
+                            // send input data
+                            FileInputStream fileInputStream = new FileInputStream(audioFile);
+                            transferStreams((int) audioFile.length(), 8192, fileInputStream, serverOutputStream);
                             fileInputStream.close();
 
                             System.out.println(HEADER + ": sent file, waiting for converted size");
 
+                            // receive output size
                             byte[] recvSizeBytes = new byte[4];
                             serverInputStream.read(recvSizeBytes);
-
                             int recvSize = ByteBuffer.wrap(recvSizeBytes).asIntBuffer().get();
 
                             System.out.println(HEADER + ": converted file has size " + recvSize);
 
-                            byte[] outputByteBuffer = new byte[8192];
+                            // receive output data
                             File resultFile = new File(command[2]);
                             FileOutputStream fileOutputStream = new FileOutputStream(resultFile);
-
-                            int receivedBytes = 0;
-                            while(receivedBytes != recvSize)
-                            {
-                                int chunkSize = serverInputStream.read(outputByteBuffer, 0, 8192);
-                                receivedBytes += chunkSize;
-
-                                System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
-
-                                fileOutputStream.write(outputByteBuffer, 0, chunkSize);
-                            }
+                            transferStreams(recvSize, 8192, serverInputStream, fileOutputStream);
 
                             System.out.println(HEADER + ": received converted data, writing to file");
-                            fileOutputStream.flush();
                         }
                         catch (IOException e)
                         {

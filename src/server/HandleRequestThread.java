@@ -97,7 +97,6 @@ public class HandleRequestThread extends Thread
             }
         }
 
-
         if (peerFound)
         {
             try
