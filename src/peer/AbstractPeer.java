@@ -110,8 +110,6 @@ public abstract class AbstractPeer
             bytesCopied += chunkSize;
 
             displayTransferSpeed.setBytesCopied(bytesCopied);
-
-            System.out.println(HEADER + ": transferred chunkSize = " + chunkSize + ", bytesCopied = " + bytesCopied);
         }
 
         output.flush();
