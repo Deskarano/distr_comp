@@ -113,7 +113,7 @@ public abstract class AbstractPeer
             displayTransferSpeed.setBytesCopied(bytesCopied);
         }
 
-        output.flush();
         timer.cancel();
+        output.flush();
     }
 }
