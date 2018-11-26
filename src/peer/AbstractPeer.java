@@ -71,13 +71,11 @@ public abstract class AbstractPeer
     {
         private int length;
         private int bytesCopied;
-        private int numSeconds;
 
         DisplayTransferSpeed(int length)
         {
             this.length = length;
             this.bytesCopied = 0;
-            this.numSeconds = 1;
         }
 
         void setBytesCopied(int bytesCopied)
@@ -88,9 +86,10 @@ public abstract class AbstractPeer
         public void run()
         {
             System.out.println(HEADER + ": transferring at " +
-                    bytesCopied / numSeconds + " bytes per sec, " +
+                    bytesCopied + " bytes per sec, " +
                     ((int) ((double) bytesCopied / length * 100)) + "% done");
-            numSeconds++;
+
+            bytesCopied = 0;
         }
     }
 
