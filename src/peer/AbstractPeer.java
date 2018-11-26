@@ -104,7 +104,7 @@ public abstract class AbstractPeer
         DisplayTransferSpeed displayTransferSpeed = new DisplayTransferSpeed(length);
         timer.scheduleAtFixedRate(displayTransferSpeed, 0, 1000);
 
-        while(bytesCopied != length)
+        while(bytesCopied < length)
         {
             int chunkSize = input.read(buffer, 0, bufSize);
             output.write(buffer, 0, bufSize);
@@ -114,5 +114,6 @@ public abstract class AbstractPeer
         }
 
         output.flush();
+        timer.cancel();
     }
 }
