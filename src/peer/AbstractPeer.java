@@ -67,41 +67,11 @@ public abstract class AbstractPeer
         }
     }
 
-    class DisplayTransferSpeed extends TimerTask
-    {
-        private int length;
-        private int bytesCopied;
-        private int numSeconds;
-
-        DisplayTransferSpeed(int length)
-        {
-            this.length = length;
-            this.bytesCopied = 0;
-            this.numSeconds = 1;
-        }
-
-        void setBytesCopied(int bytesCopied)
-        {
-            this.bytesCopied = bytesCopied;
-        }
-
-        public void run()
-        {
-            System.out.println(HEADER + ": transferring at " +
-                    bytesCopied / numSeconds + " bytes per sec, " +
-                    ((int) ((double) bytesCopied / length * 100)) + "% done");
-            numSeconds++;
-        }
-    }
-
     protected void transferStreams(int length, int bufSize, InputStream input, OutputStream output) throws IOException
     {
         byte[] buffer = new byte[bufSize];
         int bytesCopied = 0;
 
-        Timer timer = new Timer();
-        DisplayTransferSpeed displayTransferSpeed = new DisplayTransferSpeed(length);
-        timer.scheduleAtFixedRate(displayTransferSpeed, 0, 1000);
 
         while(bytesCopied != length)
         {
@@ -109,7 +79,6 @@ public abstract class AbstractPeer
             output.write(buffer, 0, bufSize);
             bytesCopied += chunkSize;
 
-            displayTransferSpeed.setBytesCopied(bytesCopied);
 
             System.out.println(HEADER + ": transferred chunkSize = " + chunkSize + ", bytesCopied = " + bytesCopied);
         }
