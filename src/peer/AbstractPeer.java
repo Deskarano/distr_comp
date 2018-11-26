@@ -70,11 +70,13 @@ public abstract class AbstractPeer
     class DisplayTransferSpeed extends TimerTask
     {
         private int length;
+        private int lastBytesCopied;
         private int bytesCopied;
 
         DisplayTransferSpeed(int length)
         {
             this.length = length;
+            this.lastBytesCopied = 0;
             this.bytesCopied = 0;
         }
 
@@ -86,10 +88,10 @@ public abstract class AbstractPeer
         public void run()
         {
             System.out.println(HEADER + ": transferring at " +
-                    bytesCopied + " bytes per sec, " +
+                    (bytesCopied - lastBytesCopied) + " bytes per sec, " +
                     ((int) ((double) bytesCopied / length * 100)) + "% done");
 
-            bytesCopied = 0;
+            lastBytesCopied = bytesCopied;
         }
     }
 
