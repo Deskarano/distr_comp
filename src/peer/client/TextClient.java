@@ -88,10 +88,15 @@ public class TextClient extends AbstractClientPeer
                             while ((line = fileReader.readLine()) != null)
                             {
                                 System.out.println(HEADER + ": sending line " + line);
-                                serverWriter.println(line);
 
+                                long startTime = System.currentTimeMillis();
+                                serverWriter.println(line);
                                 String response = serverReader.readLine();
+                                long endTime = System.currentTimeMillis();
+
                                 System.out.println(HEADER + ": received response " + response);
+
+                                System.out.println("(DATA): round trip took " + (endTime - startTime) + "ms");
                             }
 
                             fileReader.close();

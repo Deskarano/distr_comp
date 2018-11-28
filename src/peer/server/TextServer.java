@@ -36,8 +36,15 @@ public class TextServer extends AbstractServerPeer
                     while((line = clientReader.readLine()) != null)
                     {
                         System.out.println(HEADER + " " + client.getInetAddress().getHostAddress() + " sent " + line);
-                        System.out.println(HEADER + " " + client.getInetAddress().getHostAddress() + " responding " + line.toUpperCase());
-                        clientWriter.println(line.toUpperCase());
+
+                        long processStartTime = System.currentTimeMillis();
+                        String response = line.toUpperCase();
+                        long processEndTime = System.currentTimeMillis();
+
+                        System.out.println("(DATA): processing time was " + (processEndTime - processStartTime) + "ms");
+                        System.out.println(HEADER + " " + client.getInetAddress().getHostAddress() + " responding " + response);
+
+                        clientWriter.println(response);
                     }
                 }
                 catch(IOException e)

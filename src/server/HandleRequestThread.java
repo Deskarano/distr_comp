@@ -74,6 +74,8 @@ public class HandleRequestThread extends Thread
     // Run method (will run for each machine that connects to the ServerRouter)
     public void run()
     {
+        long requestStartTime = System.currentTimeMillis();
+
         String peerIP = peerSocket.getInetAddress().getHostAddress();
         boolean peerFound = false;
 
@@ -178,5 +180,8 @@ public class HandleRequestThread extends Thread
                 e.printStackTrace(System.out);
             }
         }
+
+        long requestEndTime = System.currentTimeMillis();
+        System.out.println("(DATA): request serviced in " + (requestEndTime - requestStartTime) + "ms");
     }
 }

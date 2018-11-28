@@ -52,6 +52,7 @@ public class ImageServer extends AbstractServerPeer
 
                         byte[] imageBytes = new byte[recvSize];
 
+                        long recvStart = System.currentTimeMillis();
                         int receivedBytes = 0;
                         while(receivedBytes != recvSize)
                         {
@@ -60,9 +61,13 @@ public class ImageServer extends AbstractServerPeer
 
                             System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
                         }
+                        long recvEnd = System.currentTimeMillis();
+
+                        System.out.println("(DATA): receiving image took " + (recvEnd - recvStart) + "ms");
 
                         System.out.println(HEADER + ": received image data, converting");
 
+                        long convertStart = System.currentTimeMillis();
                         BufferedImage receivedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
                         ImageFilter filter = new GrayFilter(true, 50);
                         ImageProducer producer = new FilteredImageSource(receivedImage.getSource(), filter);
@@ -71,6 +76,9 @@ public class ImageServer extends AbstractServerPeer
                         BufferedImage responseImage = new BufferedImage(rendered.getWidth(null), rendered.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
                         responseImage.getGraphics().drawImage(rendered, 0, 0, null);
                         responseImage.getGraphics().dispose();
+                        long convertEnd = System.currentTimeMillis();
+
+                        System.out.println("(DATA): image conversion took " + (convertEnd - convertStart) + "ms");
 
                         System.out.println(HEADER + ": done converting image");
 
@@ -79,10 +87,14 @@ public class ImageServer extends AbstractServerPeer
 
                         System.out.println(HEADER + ": response image has size " + byteArrayOutputStream.size());
 
+                        long sendStart = System.currentTimeMillis();
                         byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
                         clientOutputStream.write(sendSize);
                         clientOutputStream.write(byteArrayOutputStream.toByteArray());
                         clientOutputStream.flush();
+                        long sendEnd = System.currentTimeMillis();
+
+                        System.out.println("(DATA): sending response image took " + (sendEnd - sendStart) + "ms");
 
                          byteArrayOutputStream.close();
 

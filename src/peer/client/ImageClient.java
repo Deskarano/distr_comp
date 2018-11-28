@@ -92,22 +92,30 @@ public class ImageClient extends AbstractClientPeer
 
                             byte[] sendSize = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
 
+                            long sendStart = System.currentTimeMillis();
                             serverOutputStream.write(sendSize);
                             serverOutputStream.write(byteArrayOutputStream.toByteArray());
                             serverOutputStream.flush();
+                            long sendEnd = System.currentTimeMillis();
 
+                            System.out.println("(DATA): image sent in " + (sendEnd - sendStart) + "ms");
                             byteArrayOutputStream.close();
 
                             System.out.println(HEADER + ": sent image, waiting for response size");
 
+                            long waitStart = System.currentTimeMillis();
                             byte[] recvSizeBytes = new byte[4];
                             serverInputStream.read(recvSizeBytes);
                             int recvSize = ByteBuffer.wrap(recvSizeBytes).asIntBuffer().get();
+                            long waitEnd = System.currentTimeMillis();
+
+                            System.out.println("(DATA): waiting for response took " + (waitEnd - waitStart) + "ms");
 
                             System.out.println(HEADER + ": response image has size " + recvSize);
 
                             byte[] imageBytes = new byte[recvSize];
 
+                            long recvStart = System.currentTimeMillis();
                             int receivedBytes = 0;
                             while(receivedBytes != recvSize)
                             {
@@ -116,6 +124,9 @@ public class ImageClient extends AbstractClientPeer
 
                                 System.out.println(HEADER + ": received chunk of size " + chunkSize + ", receivedBytes = " + receivedBytes);
                             }
+                            long recvStop = System.currentTimeMillis();
+
+                            System.out.println("(DATA): received response data in " + (recvStop - recvStart) + "ms");
 
                             System.out.println(HEADER + ": received response image data");
 
